@@ -10,7 +10,7 @@ class Grid:
 
     def is_legal_move(self, src, dst):
         return (self.is_open_path(src, dst) and
-                self.is_node_occupied(dst) and
+                self.is_node_not_occupied(dst) and
                 self.is_move_in_grid_range(dst) and
                 self.absolute_distance_is_max_one(src, dst)
                 )
@@ -24,8 +24,8 @@ class Grid:
     def is_open_path(self, src, dst):
         return (src, dst) not in self.blocked_edges and (dst, src) not in self.blocked_edges
 
-    def is_node_occupied(self, coordinates):
-        return coordinates in self.occupied_nodes
+    def is_node_not_occupied(self, coordinates):
+        return coordinates not in self.occupied_nodes
 
     def occupy_node(self, coordinates):
         self.occupied_nodes.add(coordinates)
