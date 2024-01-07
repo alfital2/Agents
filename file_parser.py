@@ -1,4 +1,4 @@
-import edges
+import Coordinate
 import packages
 
 
@@ -9,7 +9,8 @@ class Parser:
 
     def parse(self):
         packages_arr = []
-        edges_arr = []
+        blocked_edges = {}
+        fragile_edges = {}
         with open(self.file_path, 'r') as file:
             lines = file.readlines()
             for line in lines:
@@ -19,17 +20,28 @@ class Parser:
                 elif element[0] == '#Y':
                     y = int(element[1])
                 elif element[0] == '#P':
+                    src, dst = extract_coordinates(element[1:3] + element[6:8])
                     packages_arr.append(
-                        packages.Package(tuple(element[1:3]), element[3], tuple(element[4:6]), element[6]))
+                        packages.Package(src, element[3], dst, element[6]))
                 elif element[0] == '#B':
-                    edges_arr.append(edges.BlockedEdge(element[1], element[2], element[3], element[4]))
+                    x1y1, x2y2 = extract_coordinates(element[1:])
+                    blocked_edges[x1y1] = x2y2
                 elif element[0] == '#F':
-                    edges_arr.append(edges.FragileEdge(element[1], element[2], element[3], element[4]))
+                    x1y1, x2y2 = extract_coordinates(element[1:])
+                    fragile_edges[x1y1] = x2y2
+                    fragile_edges[x2y2] = x1y1
 
         self._data["grid_rows"] = y
         self._data["grid_columns"] = x
         self._data["packages"] = packages_arr
-        self._data["edges"] = edges_arr
+        self._data["blocked_edges"] = blocked_edges
+        self._data["fragile_edges"] = fragile_edges
 
     def get_grid_data(self):
         return self._data
+
+
+def extract_coordinates(element):
+    x1y1 = (int(element[0]), int(element[1]))
+    x2y2 = (int(element[2]), int(element[3]))
+    return x1y1, x2y2
