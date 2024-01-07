@@ -8,7 +8,7 @@ class Grid:
         self.blocked_edges = data["blocked_edges"]
         self.fragile_edges = data["fragile_edges"]
         self.agents_arr = data["agents"]
-        self.occupied_nodes = set() # only occupied be agents
+        self.occupied_nodes = set()  # only occupied be agents
 
         self.place_agents_on_grid()
 
@@ -45,6 +45,9 @@ class Grid:
     def is_fragile_edge(self, src, dst):
         return (src, dst) in self.fragile_edges or (dst, src) in self.fragile_edges
 
+    def is_blocked_edge(self, src, dst):
+        return (src, dst) in self.blocked_edges or (dst, src) in self.blocked_edges
+
     def block_fragile_edge(self, src, dst):
         if tuple([src, dst]) in self.fragile_edges:
             self.fragile_edges.remove(tuple([src, dst]))
@@ -68,7 +71,7 @@ class Grid:
 
     def print_grid(self):
         for row in range(self.grid_rows + 1):
-            vertical_path =[]
+            vertical_path = []
             for col in range(self.grid_columns + 1):
                 item = "#"
                 if (col, row) in self.packages_position:
@@ -76,16 +79,20 @@ class Grid:
                 elif (col, row) in self.occupied_nodes:
                     item = "@"
 
-                if ((col, row),(col+1, row)) in self.blocked_edges:
+                if self.is_blocked_edge((col, row), (col + 1, row)):
                     path = "\t"
+                elif self.is_fragile_edge((col, row), (col + 1, row)):
+                    path = " ~ "
                 elif col == self.grid_columns:
                     path = ""
                 else:
                     path = " - "
-                print(item,end=path)
+                print(item, end=path)
 
-                if ((col, row),(col, row+1)) in self.blocked_edges:
+                if self.is_blocked_edge((col, row), (col, row + 1)):
                     vertical_path.append("\t")
+                elif self.is_fragile_edge((col, row), (col, row + 1)):
+                    vertical_path.append("Ξ\t")
                 elif row == self.grid_rows:
                     vertical_path.append("")
                 else:
