@@ -12,6 +12,9 @@ class Agent:
         # Calc path to 1st objective and return if exists
         pass
 
+    def get_position(self):
+        return self._pos
+
     def get_action(self, grid):
         if not self._objectives:
             if not self._scan_objectives(grid):

@@ -3,10 +3,14 @@ class Grid:
     def __init__(self, data):
         self.grid_rows = data["grid_rows"]
         self.grid_columns = data["grid_columns"]
-        self.packages = data["packages"]
+        self.packages_data = data["packages"]
+        self.packages_position = {x.source for x in self.packages_data}
         self.blocked_edges = data["blocked_edges"]
         self.fragile_edges = data["fragile_edges"]
-        self.occupied_nodes = set()
+        self.agents_arr = data["agents"]
+        self.occupied_nodes = set() # only occupied be agents
+
+        self.place_agents_on_grid()
 
     def is_legal_move(self, src, dst):
         return (self.is_open_path(src, dst) and
@@ -16,7 +20,12 @@ class Grid:
                 )
 
     def get_packages(self):
-        return self.packages
+        return self.packages_data
+
+    def place_agents_on_grid(self):
+        agents_position = {x.get_position() for x in self.agents_arr}
+        for position in agents_position:
+            self.occupy_node(position)
 
     def is_move_in_grid_range(self, dst):
         return 0 <= dst[0] <= self.grid_columns and 0 <= dst[1] <= self.grid_rows
@@ -56,6 +65,33 @@ class Grid:
         x1, y1 = src
         x2, y2 = dst
         return abs(x2 - x1) <= 1 and abs(y2 - y1) <= 1 and abs(x2 - x1) + abs(y2 - y1) <= 1
+
+    def print_grid(self):
+        for row in range(self.grid_rows + 1):
+            vertical_path =[]
+            for col in range(self.grid_columns + 1):
+                item = "#"
+                if (col, row) in self.packages_position:
+                    item = "P"
+                elif (col, row) in self.occupied_nodes:
+                    item = "@"
+
+                if ((col, row),(col+1, row)) in self.blocked_edges:
+                    path = "\t"
+                elif col == self.grid_columns:
+                    path = ""
+                else:
+                    path = " - "
+                print(item,end=path)
+
+                if ((col, row),(col, row+1)) in self.blocked_edges:
+                    vertical_path.append("\t")
+                elif row == self.grid_rows:
+                    vertical_path.append("")
+                else:
+                    vertical_path.append("|\t")
+            print()
+            print(''.join(vertical_path))
 
 
 class GridErrors(Exception):
