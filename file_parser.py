@@ -49,7 +49,7 @@ class Parser:
         self._data["fragile_edges"] = fragile_edges
         self._data["agents"] = agents_arr
 
-    def get_grid_data(self):
+    def get_data(self):
         return self._data
 
 
