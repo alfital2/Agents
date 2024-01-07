@@ -1,5 +1,5 @@
 import file_parser
-import grid
+import Simulator
 
 
 def main():
@@ -8,8 +8,8 @@ def main():
     parser.parse()
 
     grid_data = parser.get_grid_data()
-    app_grid = grid.Grid(grid_data)
-    app_grid.print_grid()
+    app_grid = grid.GridGraph(grid_data)
+
 
 if __name__ == "__main__":
     main()

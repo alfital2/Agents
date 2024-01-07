@@ -29,7 +29,6 @@ class Parser:
                 elif element[0] == '#F':
                     x1y1, x2y2 = extract_coordinates(element[1:])
                     fragile_edges[x1y1] = x2y2
-                    fragile_edges[x2y2] = x1y1
 
         self._data["grid_rows"] = y
         self._data["grid_columns"] = x
