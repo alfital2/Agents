@@ -65,9 +65,12 @@ class Grid:
             raise IllegalMove("Invalid move, edge either blocked or destination node occupied")
 
     def absolute_distance_is_max_one(self, src, dst):
+        return self.get_cost(src, dst) <= 1
+
+    def get_cost(self, src, dst):
         x1, y1 = src
         x2, y2 = dst
-        return abs(x2 - x1) <= 1 and abs(y2 - y1) <= 1 and abs(x2 - x1) + abs(y2 - y1) <= 1
+        return abs(x2 - x1) + abs(y2 - y1)
 
     def print_grid(self):
         for row in range(self.grid_rows + 1):
