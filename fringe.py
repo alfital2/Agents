@@ -6,11 +6,12 @@ class Fringe:
     def _sort(self):
         self._queue.sort(key=self._sort_func)
 
-
     def enqueue(self,node):
         self._queue.append(node)
         self._sort()
 
-
     def dequeue(self):
         return self._queue.pop(0)
+
+    def is_empty(self):
+        return len(self._queue) == 0

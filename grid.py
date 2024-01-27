@@ -1,14 +1,19 @@
+import copy
+
+
 class Grid:
 
-    def __init__(self, data):
+    def __init__(self, data, time=0):
         self.grid_rows = data["grid_rows"]
         self.grid_columns = data["grid_columns"]
         self.packages_data = data["packages"]
         self.packages_position = {x.source for x in self.packages_data}
+        self.packages_history = {x.source: {'obj': x} for x in self.packages_data}
         self.blocked_edges = data["blocked_edges"]
         self.fragile_edges = data["fragile_edges"]
         self.agents_arr = data["agents"]
         self.occupied_nodes = set()  # only occupied be agents
+        self.time = time
 
         self.place_agents_on_grid()
 
@@ -56,13 +61,18 @@ class Grid:
         self.blocked_edges.add(tuple([src, dst]))
 
     def move(self, src, dst):
-        if self.is_legal_move(src, dst):
-            if self.is_fragile_edge(src, dst):
-                self.block_fragile_edge(src, dst)
-            self.release_occupied_node(src)
-            self.occupy_node(dst)
+        cloned_grid = copy.deepcopy(self)
+        if cloned_grid.is_legal_move(src, dst):
+            if cloned_grid.is_fragile_edge(src, dst):
+                cloned_grid.block_fragile_edge(src, dst)
+            if dst in self.packages_position:
+                self.packages_position.remove(dst)
+                self.packages_history[dst]["pick_up_time"] = self.time + 1
+            cloned_grid.release_occupied_node(src)
+            cloned_grid.occupy_node(dst)
         else:
             raise IllegalMove("Invalid move, edge either blocked or destination node occupied")
+        return cloned_grid
 
     def absolute_distance_is_max_one(self, src, dst):
         return self.get_cost(src, dst) <= 1
