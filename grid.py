@@ -8,7 +8,6 @@ class Grid:
         self.grid_columns = data["grid_columns"]
         self.packages_data = data["packages"]
         self.packages_position = {x.source for x in self.packages_data}
-        self.packages_history = {x.source: {'obj': x} for x in self.packages_data}
         self.blocked_edges = data["blocked_edges"]
         self.fragile_edges = data["fragile_edges"]
         self.agents_arr = data["agents"]
@@ -66,8 +65,7 @@ class Grid:
             if cloned_grid.is_fragile_edge(src, dst):
                 cloned_grid.block_fragile_edge(src, dst)
             if dst in self.packages_position:
-                self.packages_position.remove(dst)
-                self.packages_history[dst]["pick_up_time"] = self.time + 1
+                cloned_grid.packages_position.remove(dst)
             cloned_grid.release_occupied_node(src)
             cloned_grid.occupy_node(dst)
         else:
@@ -103,13 +101,13 @@ class Grid:
                 print(item, end=path)
 
                 if self.is_blocked_edge((col, row), (col, row + 1)):
-                    vertical_path.append("\t")
+                    vertical_path.append("    ")
                 elif self.is_fragile_edge((col, row), (col, row + 1)):
-                    vertical_path.append("Ξ\t")
+                    vertical_path.append("Ξ   ")
                 elif row == self.grid_rows:
                     vertical_path.append("")
                 else:
-                    vertical_path.append("|\t")
+                    vertical_path.append("|   ")
             print()
             print(''.join(vertical_path))
 

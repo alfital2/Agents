@@ -1,12 +1,13 @@
-import node
+from node import Node
 from fringe import Fringe
-
+import copy
 
 class Agent:
     def __init__(self, position) -> None:
         self._pos = position
         self._objectives = []
         self._path = []
+        self._package_history = {}
 
     def _scan_objectives(self, grid) -> bool:
         # Scan for objectives and return if found any
@@ -27,11 +28,11 @@ class Agent:
     def _calc_successor_function(self, node):
         return [move for move in self._get_moves() if node.grid.is_legal_move(self._pos, move)]
 
-    def get_action(self, grid, goal_test):
+    def get_action(self, grid):
         min_heap = Fringe(lambda x: x.g_val + x.h_val)
 
         def a_star(node):
-            if goal_test(node): return node
+            if Node.goal_test(node): return node
             successors = self._calc_successor_function(node)
             for move in successors:
                 new_node,self._objectives = node.make_node(move)
@@ -41,16 +42,17 @@ class Agent:
                 return a_star(next_state)
             else:
                 return None
-        node = Node(grid+self._objectives,None,0,self._pos)
+        
+        new_grid = copy.deepcopy(grid)
+        node = Node(grid = new_grid,parent = None,cost=0,current_pos=self._pos,history=self._package_history)
         answer = a_star(node)
-        while answer.parent != None:
+
+        if answer.parent is None: # Already solved problem
+            return None # TODO Should be check in get_action invoke
+        
+        while answer.parent.parent != None:# Grandparent is None: Parent->Son is the next move(aka Son.current_pos)
             answer = answer.parent
-        if not self._objectives:
-            if not self._scan_objectives(grid):
-                return None
-
-        if not self._path:
-            if not self._calc_path(grid):
-                return None
-
-        return self._path[0]
+        
+        self._path.append(answer.current_position)
+        self._pos = answer.current_position
+        return answer.current_position

@@ -14,9 +14,10 @@ def heuristic_mst(state_node):
                     visited.add(edge[1])
                     tree.add(edge)
         return tree
-
-    graph_nodes = [state_node.current_pos] + [package for package in
-                                              state_node.grid.packages_position]  # TODO add package destinations
+    current_position = [state_node.current_pos]
+    pickable_packages = [package for package in state_node.grid.packages_position]
+    deliverable_packages = [package['obj'].destination for package in state_node.package_history if package['delivery_time']==-1]
+    graph_nodes =  current_position + pickable_packages + deliverable_packages
     graph_edges = []
 
     for n1, n2 in combinations(graph_nodes, 2):
@@ -26,4 +27,17 @@ def heuristic_mst(state_node):
     return sum([x[2] for x in tree_weights])
 
 
-def goal_test_mst(state_node):
+def goal_test_mst(state_node)->bool:
+    pickable_packages = [package for package in state_node.grid.packages_position] # list of packages yet to be picked up
+    answer = len(pickable_packages)==0 # checks if 0 pickable packages
+
+    # For each package this agent interacted with check:
+    #   if pickedup after spawn time
+    #   if delivered before final time
+    for package in state_node.package_history: 
+        spawn_time = state_node.package_history[package]['obj'].delivery_time
+        final_time = state_node.package_history[package]['obj'].max_delivery_time
+        pick_up_time = state_node.package_history[package]['pick_up_time']
+        delivery_time = state_node.package_history[package]['delivery_time']
+        answer = answer and spawn_time<=pick_up_time and delivery_time<=final_time
+    return answer

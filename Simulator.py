@@ -11,10 +11,14 @@ class Simulator:
     def run(self):
         print("======MAPD SIMULATOR======")
         self.world.print_grid()
-        while True:
+        solved = False
+        while not solved:
             for agent in self.agents:
                 current_position = agent.get_position()
                 move = agent.get_action(self.world)
+                if move is None:
+                    solved = True
+                    break
                 self.world = self.world.move(current_position,move)
                 self.world.print_grid()
             self.world.time += 1
