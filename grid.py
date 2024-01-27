@@ -110,6 +110,9 @@ class Grid:
                     vertical_path.append("|   ")
             print()
             print(''.join(vertical_path))
+    def __eq__(self, other):
+        answer = True
+        answer = answer and self.packages_position == other.packages_position
 
 
 class GridErrors(Exception):

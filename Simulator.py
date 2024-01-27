@@ -1,6 +1,5 @@
 import grid
 
-
 class Simulator:
 
     def __init__(self, data):
@@ -18,10 +17,11 @@ class Simulator:
                 move = agent.get_action(self.world)
                 if move is None:
                     solved = True
-                    break
+                    break # TODO is this necessary ? maybe return ?
                 self.world = self.world.move(current_position,move)
                 self.world.print_grid()
             self.world.time += 1
+
 
 
 def new_simulation(env_path):

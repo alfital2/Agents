@@ -23,7 +23,7 @@ class Parser:
                 elif element[0] == '#P':
                     src, dst = extract_coordinates(element[1:3] + element[6:8])
                     packages_arr.append(
-                        packages.Package(src, element[3], dst, element[6]))
+                        packages.Package(src, int(element[3]), dst, int(element[6])))
                 elif element[0] == '#B':
                     x1y1, x2y2 = extract_coordinates(element[1:])
                     # blocked_edges[x1y1] = x2y2
@@ -34,7 +34,7 @@ class Parser:
                     fragile_edges.add(tuple([x1y1, x2y2]))
                 elif element[0] == '#A':
                     xy = tuple([int(element[1]), int(element[2])])
-                    agents_arr.append(sa.StupidAgent(xy))
+                    agents_arr.append(sa.Agent(xy))
                 elif element[0] == '#H':
                     xy = tuple([int(element[1]), int(element[2])])
                     agents_arr.append(ha.HumanAgent(xy))
