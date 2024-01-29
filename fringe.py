@@ -3,6 +3,9 @@ class Fringe:
         self._queue = []
         self._sort_func = sort_func
 
+    def __containes__(self, element):
+        return element in self._queue
+
     def _sort(self):
         self._queue.sort(key=self._sort_func)
 

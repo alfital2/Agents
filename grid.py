@@ -114,6 +114,23 @@ class Grid:
         answer = True
         answer = answer and self.packages_position == other.packages_position
 
+    def __eq__(self, other) -> bool:
+        if self.grid_rows != other.grid_rows:
+            return False
+        if self.grid_columns != other.grid_columns:
+            return False
+        for package in self.packages_position:
+            if package not in other.packages_position:
+                return False
+        for edge in self.fragile_edges:
+            if edge not in other.blocked_edges:
+                return False
+        for edge in self.fragile_edges:
+            if edge not in other.fragile_edges:
+                return False
+        return True
+        
+
 
 class GridErrors(Exception):
     pass

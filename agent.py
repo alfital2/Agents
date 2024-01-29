@@ -36,7 +36,8 @@ class Agent:
             successors = node.get_successors()
             for move in successors:
                 new_node = node.make_node(move)
-                min_heap.enqueue(new_node)
+                if new_node not in min_heap:
+                    min_heap.enqueue(new_node)
             if not min_heap.is_empty():  # not empty
                 next_state = min_heap.dequeue()
                 return a_star(next_state)

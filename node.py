@@ -1,3 +1,5 @@
+from functools import reduce
+
 import copy
 class Node:
     heuristic = lambda x: 0
@@ -40,8 +42,15 @@ class Node:
         history = copy.deepcopy(self.package_history)
         return Node(grid=new_grid, parent=self, cost=self.g_val + move_cost, current_pos=target,history=history)
 
-    def __eq__(self, other):
-        answer = True
-        answer = answer and self.grid == other.grid
-        answer = answer and self.current_position == other.current_position
-        answer = answer and self.package_history == other.package_history
+    def __eq__(self, other) -> bool:
+        if self.current_position!=other.current_position:
+            return False
+        for package in self.package_history:
+            if package in other.package_history:
+                for attr1, attr2 in zip(self.package_history[package], other.package_history[package]):
+                    if self.package_history[package][attr1] != other.package_history[package][attr2]:
+                        return False
+            else:
+                return False
+        return self.grid == other.grid
+
