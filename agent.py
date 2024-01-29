@@ -38,6 +38,12 @@ class Agent:
                 new_node = node.make_node(move)
                 if new_node not in min_heap:
                     min_heap.enqueue(new_node)
+                else:
+                    for node in min_heap:
+                        if new_node==node and new_node.g_val+new_node.h_val < node.g_val+node.h_val:
+                            min_heap.remove(node)
+                            min_heap.enqueue(new_node)
+                            break
             if not min_heap.is_empty():  # not empty
                 next_state = min_heap.dequeue()
                 return a_star(next_state)

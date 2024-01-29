@@ -122,7 +122,7 @@ class Grid:
         for package in self.packages_position:
             if package not in other.packages_position:
                 return False
-        for edge in self.fragile_edges:
+        for edge in self.blocked_edges:
             if edge not in other.blocked_edges:
                 return False
         for edge in self.fragile_edges:

@@ -5,6 +5,9 @@ class Fringe:
 
     def __containes__(self, element):
         return element in self._queue
+    
+    def __iter__(self):
+        return iter(self._queue)
 
     def _sort(self):
         self._queue.sort(key=self._sort_func)
@@ -18,3 +21,7 @@ class Fringe:
 
     def is_empty(self):
         return len(self._queue) == 0
+    
+    def remove(self, element):
+        if element in self._queue:
+            self._queue.remove(element)
