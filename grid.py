@@ -3,18 +3,34 @@ import copy
 
 class Grid:
 
-    def __init__(self, data, time=0):
-        self.grid_rows = data["grid_rows"]
-        self.grid_columns = data["grid_columns"]
-        self.packages_data = data["packages"]
-        self.packages_position = {x.source for x in self.packages_data}
-        self.blocked_edges = data["blocked_edges"]
-        self.fragile_edges = data["fragile_edges"]
-        self.agents_arr = data["agents"]
-        self.occupied_nodes = set()  # only occupied be agents
-        self.time = time
+    def __init__(self, data = None, time=0):
+        if data:
+            self.data = data
+            self.grid_rows = data["grid_rows"]
+            self.grid_columns = data["grid_columns"]
+            self.packages_data = data["packages"]
+            self.packages_position = {x.source for x in self.packages_data}
+            self.blocked_edges = data["blocked_edges"]
+            self.fragile_edges = data["fragile_edges"]
+            self.agents_arr = data["agents"]
+            self.occupied_nodes = set()  # only occupied be agents
+            self.time = time
 
-        self.place_agents_on_grid()
+            self.place_agents_on_grid()
+
+    def copy(self):
+        clone = Grid()
+        clone.data = self.data
+        clone.grid_rows = self.grid_rows
+        clone.grid_columns = self.grid_columns
+        clone.packages_data = self.packages_data
+        clone.packages_position = {x for x in self.packages_position}
+        clone.blocked_edges = {x for x in self.blocked_edges}
+        clone.fragile_edges = {x for x in self.fragile_edges}
+        clone.agents_arr = [x for x in self.agents_arr]
+        clone.occupied_nodes = {x for x in self.occupied_nodes}
+        clone.time = self.time
+        return clone
 
     def is_legal_move(self, src, dst):
         return (self.is_open_path(src, dst) and
@@ -91,7 +107,7 @@ class Grid:
                     item = "@"
 
                 if self.is_blocked_edge((col, row), (col + 1, row)):
-                    path = "\t"
+                    path = "   "
                 elif self.is_fragile_edge((col, row), (col + 1, row)):
                     path = " ~ "
                 elif col == self.grid_columns:
@@ -110,24 +126,26 @@ class Grid:
                     vertical_path.append("|   ")
             print()
             print(''.join(vertical_path))
-    def __eq__(self, other):
-        answer = True
-        answer = answer and self.packages_position == other.packages_position
+
 
     def __eq__(self, other) -> bool:
         if self.grid_rows != other.grid_rows:
             return False
         if self.grid_columns != other.grid_columns:
             return False
-        for package in self.packages_position:
-            if package not in other.packages_position:
-                return False
-        for edge in self.blocked_edges:
-            if edge not in other.blocked_edges:
-                return False
-        for edge in self.fragile_edges:
-            if edge not in other.fragile_edges:
-                return False
+        # for package in self.packages_position:
+        #     if package not in other.packages_position:
+        #         return False
+        if self.blocked_edges != other.blocked_edges:
+            return False
+        # for edge in self.blocked_edges:
+        #     if edge not in other.blocked_edges:
+        #         return False
+        if self.fragile_edges != other.fragile_edges:
+            return False
+        # for edge in self.fragile_edges:
+        #     if edge not in other.fragile_edges:
+        #         return False
         return True
         
 

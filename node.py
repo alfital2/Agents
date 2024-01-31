@@ -4,14 +4,30 @@ import copy
 class Node:
     heuristic = lambda x: 0
     goal_test = lambda x: False
+    temp_goal_test = lambda x :False
+    node_id = 0
 
-    def __init__(self, grid, parent, cost, current_pos, history = {}):
+    def __init__(self, grid, parent, cost, current_pos, path, history = {}):
         self.grid = grid
         self.parent = parent
         self.g_val = cost
         self.current_position = current_pos
         self.package_history = history
+        self.id = Node.node_id
+        self.path = set(path)
+        pickup_packages = {x.source for x in grid.packages_data}
+        destinations_packages = {x.destination for x in grid.packages_data}
+        general_points_of_interest = pickup_packages.union(destinations_packages)
+        points_to_visit = general_points_of_interest.difference(self.path)
+
+        destinations_of_pickedup = {package['obj'].destination for _, package in self.package_history.items() if package['delivery_time']==-1}
+        destinations_of_not_pickedup = {x.destination for x in grid.packages_data if x.source not in self.package_history}
+        #destinations_of_delivered = {package['obj'].destination for _, package in self.package_history.items() if package['delivery_time']!=-1}
+        #destinations_revisit = 
+
+        self.points_of_interest = points_to_visit.union(destinations_of_pickedup).union(destinations_of_not_pickedup)
         self.h_val = Node.heuristic(self)
+        Node.node_id+=1
 
     def get_successors(self):
         return [move for move in self._get_moves() if self.grid.is_legal_move(self.current_position, move)]
@@ -33,6 +49,7 @@ class Node:
                     package = p
                     break
             self.package_history[target] = {'obj':package, 'pick_up_time':new_grid.time, 'delivery_time':-1}
+
         destinations = {package['obj'].destination: coordinates for coordinates, package in
                         self.package_history.items()}
         
@@ -40,17 +57,21 @@ class Node:
             self.package_history[destinations[target]]['delivery_time'] = self.grid.time + 1
 
         history = copy.deepcopy(self.package_history)
-        return Node(grid=new_grid, parent=self, cost=self.g_val + move_cost, current_pos=target,history=history)
+        return Node(grid=new_grid, parent=self, cost=self.g_val + move_cost, current_pos=target,path=self.path|{target},history=history)
 
     def __eq__(self, other) -> bool:
+        if not isinstance(other, Node):
+            return False
         if self.current_position!=other.current_position:
             return False
-        for package in self.package_history:
-            if package in other.package_history:
-                for attr1, attr2 in zip(self.package_history[package], other.package_history[package]):
-                    if self.package_history[package][attr1] != other.package_history[package][attr2]:
-                        return False
-            else:
-                return False
+        if self.points_of_interest != other.points_of_interest:
+            return False
+        # for package in self.package_history:
+        #     if package in other.package_history:
+        #         for attr1, attr2 in zip(self.package_history[package], other.package_history[package]):
+        #             if self.package_history[package][attr1] != other.package_history[package][attr2]:
+        #                 return False
+        #     else:
+        #         return False
         return self.grid == other.grid
 

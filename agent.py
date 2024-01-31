@@ -32,28 +32,75 @@ class Agent:
         min_heap = Fringe(lambda x: x.g_val + x.h_val)
 
         def a_star(node):
+            node.grid.print_grid()
+            print("List of moves so far:")
+            temp = node
+            while temp!=None:
+                print(temp.current_position,end=" ")
+                print("<-", end=" ")
+                temp = temp.parent
+
+            print("\nPoints of interest:{}".format(node.points_of_interest))
+
+            print("\n--------------------------------------")
             if Node.goal_test(node): return node
-            successors = node.get_successors()
-            for move in successors:
-                new_node = node.make_node(move)
-                if new_node not in min_heap:
-                    min_heap.enqueue(new_node)
-                else:
-                    for node in min_heap:
-                        if new_node==node and new_node.g_val+new_node.h_val < node.g_val+node.h_val:
-                            min_heap.remove(node)
-                            min_heap.enqueue(new_node)
-                            break
+            if Node.temp_goal_test(node):
+                successors = node.get_successors()
+                for move in successors:
+                    new_node = node.make_node(move)
+                    if new_node not in min_heap:
+                        min_heap.enqueue(new_node)
+                    else:
+                        for n in min_heap:
+                            if new_node==n and new_node.g_val+new_node.h_val < n.g_val+n.h_val:
+                                min_heap.remove(n)
+                                min_heap.enqueue(new_node)
+                                break
             if not min_heap.is_empty():  # not empty
                 next_state = min_heap.dequeue()
                 return a_star(next_state)
             else:
                 return None
         
-        new_grid = copy.deepcopy(grid)
+        def a_star_iterative():
+            while not min_heap.is_empty():
+                # node = min_heap.dequeue()
+                # node.grid.print_grid()
+                # print("List of moves so far:")
+                # temp = node
+                # while temp!=None:
+                #     print(temp.current_position,end=" ")
+                #     print("<-", end=" ")
+                #     temp = temp.parent
+
+                # print("\nPoints of interest:{}".format(node.points_of_interest))
+
+                # print("\n--------------------------------------")
+                if Node.goal_test(node): return node
+                if Node.temp_goal_test(node):
+                    successors = node.get_successors()
+                    for move in successors:
+                        new_node = node.make_node(move)
+                        if new_node not in min_heap:
+                            min_heap.enqueue(new_node)
+                        else:
+                            for n in min_heap:
+                                if new_node==n and new_node.g_val+new_node.h_val < n.g_val+n.h_val:
+                                    min_heap.remove(n)
+                                    min_heap.enqueue(new_node)
+                                    break
+            return None
+
+        new_grid = copy.deepcopy(grid) #grid.copy()
         history = copy.deepcopy(self._package_history)
-        node = Node(grid = new_grid,parent = None,cost=0,current_pos=self._pos,history=history)
-        answer = a_star(node)
+        node = Node(grid = new_grid,parent = None,cost=0,current_pos=self._pos, path=self._path,history=history)
+
+        # Iterative:
+        min_heap.enqueue(node)
+        answer = a_star_iterative()
+
+        # Recursive
+        # answer = a_star_iterative(node)
 
         if answer.parent is None: # Already solved problem
             return None # TODO Should be check in get_action invoke
@@ -70,7 +117,7 @@ class Agent:
                 if p.source == next_move:
                     package = p
                     break
-            self._package_history[next_move] = {'obj': package, 'pick_up_time': new_grid.time, 'delivery_time': -1}
+            self._package_history[next_move] = {'obj': package, 'pick_up_time': grid.time+1, 'delivery_time': -1}
         destinations = {package['obj'].destination:coordinates for coordinates,package in self._package_history.items()}
         if next_move in destinations and self._package_history[destinations[next_move]]['delivery_time']==-1:
             self._package_history[destinations[next_move]]['delivery_time'] = grid.time+1

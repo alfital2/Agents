@@ -21,9 +21,9 @@ class Parser:
                 elif element[0] == '#Y':
                     y = int(element[1])
                 elif element[0] == '#P':
-                    src, dst = extract_coordinates(element[1:3] + element[6:8])
+                    src, dst = extract_coordinates(element[1:3] + element[5:7])
                     packages_arr.append(
-                        packages.Package(src, int(element[3]), dst, int(element[6])))
+                        packages.Package(src, int(element[3]), dst, int(element[7])))
                 elif element[0] == '#B':
                     x1y1, x2y2 = extract_coordinates(element[1:])
                     # blocked_edges[x1y1] = x2y2
