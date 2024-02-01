@@ -64,7 +64,7 @@ class Agent:
         
         def a_star_iterative():
             while not min_heap.is_empty():
-                # node = min_heap.dequeue()
+                node = min_heap.dequeue()
                 # node.grid.print_grid()
                 # print("List of moves so far:")
                 # temp = node
@@ -74,13 +74,14 @@ class Agent:
                 #     temp = temp.parent
 
                 # print("\nPoints of interest:{}".format(node.points_of_interest))
-
+                # print("h:{}, g:{}".format(node.h_val,node.g_val))
                 # print("\n--------------------------------------")
                 if Node.goal_test(node): return node
                 if Node.temp_goal_test(node):
                     successors = node.get_successors()
                     for move in successors:
                         new_node = node.make_node(move)
+                        # min_heap.enqueue(new_node)
                         if new_node not in min_heap:
                             min_heap.enqueue(new_node)
                         else:

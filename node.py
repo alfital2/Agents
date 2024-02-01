@@ -16,16 +16,16 @@ class Node:
         self.id = Node.node_id
         self.path = set(path)
         pickup_packages = {x.source for x in grid.packages_data}
-        destinations_packages = {x.destination for x in grid.packages_data}
-        general_points_of_interest = pickup_packages.union(destinations_packages)
-        points_to_visit = general_points_of_interest.difference(self.path)
+        #destinations_packages = {x.destination for x in grid.packages_data}
+        #general_points_of_interest = pickup_packages.union(destinations_packages)
+        points_to_visit = pickup_packages.difference(self.path)#general_points_of_interest.difference(self.path)
 
         destinations_of_pickedup = {package['obj'].destination for _, package in self.package_history.items() if package['delivery_time']==-1}
         destinations_of_not_pickedup = {x.destination for x in grid.packages_data if x.source not in self.package_history}
         #destinations_of_delivered = {package['obj'].destination for _, package in self.package_history.items() if package['delivery_time']!=-1}
         #destinations_revisit = 
 
-        self.points_of_interest = points_to_visit.union(destinations_of_pickedup).union(destinations_of_not_pickedup)
+        self.points_of_interest = points_to_visit.union(destinations_of_pickedup)#.union(destinations_of_not_pickedup)
         self.h_val = Node.heuristic(self)
         Node.node_id+=1
 

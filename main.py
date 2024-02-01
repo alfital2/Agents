@@ -7,7 +7,7 @@ import sys
 
 if __name__ == "__main__":
     sys.setrecursionlimit(100000)
-    file_path = "environments/env3.txt"
+    file_path = "environments/env5.txt"
     parser = file_parser.Parser(file_path)
     parser.parse()
 
