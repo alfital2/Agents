@@ -10,6 +10,7 @@ class Grid:
             self.grid_columns = data["grid_columns"]
             self.packages_data = data["packages"]
             self.packages_position = {x.source for x in self.packages_data}
+            self.packages_destination = {x.destination for x in self.packages_data}
             self.blocked_edges = data["blocked_edges"]
             self.fragile_edges = data["fragile_edges"]
             self.agents_arr = data["agents"]
@@ -18,23 +19,9 @@ class Grid:
 
             self.place_agents_on_grid()
 
-    def copy(self):
-        clone = Grid()
-        clone.data = self.data
-        clone.grid_rows = self.grid_rows
-        clone.grid_columns = self.grid_columns
-        clone.packages_data = self.packages_data
-        clone.packages_position = {x for x in self.packages_position}
-        clone.blocked_edges = {x for x in self.blocked_edges}
-        clone.fragile_edges = {x for x in self.fragile_edges}
-        clone.agents_arr = [x for x in self.agents_arr]
-        clone.occupied_nodes = {x for x in self.occupied_nodes}
-        clone.time = self.time
-        return clone
-
     def is_legal_move(self, src, dst):
         return (self.is_open_path(src, dst) and
-                self.is_node_not_occupied(dst) and
+                self.is_node_not_occupied(src,dst) and
                 self.is_move_in_grid_range(dst) and
                 self.absolute_distance_is_max_one(src, dst)
                 )
@@ -53,8 +40,9 @@ class Grid:
     def is_open_path(self, src, dst):
         return (src, dst) not in self.blocked_edges and (dst, src) not in self.blocked_edges
 
-    def is_node_not_occupied(self, coordinates):
-        return coordinates not in self.occupied_nodes
+    def is_node_not_occupied(self, src,dst):
+        if src == dst: return True #no operation case
+        return dst not in self.occupied_nodes
 
     def occupy_node(self, coordinates):
         self.occupied_nodes.add(coordinates)
@@ -82,6 +70,8 @@ class Grid:
                 cloned_grid.block_fragile_edge(src, dst)
             if dst in self.packages_position:
                 cloned_grid.packages_position.remove(dst)
+                package_destination = [x.destination for x in self.packages_data if x.source == dst][0]
+                cloned_grid.packages_destination.remove(package_destination)
             cloned_grid.release_occupied_node(src)
             cloned_grid.occupy_node(dst)
         else:

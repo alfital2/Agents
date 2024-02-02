@@ -16,6 +16,10 @@ class Fringe:
         self._queue.append(node)
         self._sort()
 
+    def enqueue_all(self,nodes):
+        self._queue.extend(nodes)
+        self._sort()
+
     def dequeue(self):
         return self._queue.pop(0)
 
