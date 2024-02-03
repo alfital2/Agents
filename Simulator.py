@@ -1,6 +1,5 @@
-import file_parser
 import grid
-
+import time
 
 class Simulator:
 
@@ -8,18 +7,22 @@ class Simulator:
         self.simulation_data = data
         self.agents = self.simulation_data["agents"]
         self.world = grid.Grid(self.simulation_data)
-        self.time = 0
 
     def run(self):
         print("======MAPD SIMULATOR======")
         self.world.print_grid()
-        while True:
+        solved = False
+        while not solved:
             for agent in self.agents:
                 current_position = agent.get_position()
                 move = agent.get_action(self.world)
-                self.world.move(current_position,move)
+                if move is None:
+                    solved = True
+                    break # TODO is this necessary ? maybe return ?
+                self.world = self.world.move(current_position,move)
+                print("Real Move") # print world state
                 self.world.print_grid()
-                self.time = self.time + 1
+            self.world.time += 1
 
 
 def new_simulation(env_path):
