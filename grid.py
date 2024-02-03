@@ -3,7 +3,7 @@ import copy
 
 class Grid:
 
-    def __init__(self, data = None, time=0):
+    def __init__(self, data=None, time=0):
         if data:
             self.data = data
             self.grid_rows = data["grid_rows"]
@@ -21,7 +21,7 @@ class Grid:
 
     def is_legal_move(self, src, dst):
         return (self.is_open_path(src, dst) and
-                self.is_node_not_occupied(src,dst) and
+                self.is_node_not_occupied(src, dst) and
                 self.is_move_in_grid_range(dst) and
                 self.absolute_distance_is_max_one(src, dst)
                 )
@@ -40,8 +40,8 @@ class Grid:
     def is_open_path(self, src, dst):
         return (src, dst) not in self.blocked_edges and (dst, src) not in self.blocked_edges
 
-    def is_node_not_occupied(self, src,dst):
-        if src == dst: return True #no operation case
+    def is_node_not_occupied(self, src, dst):
+        if src == dst: return True  # no operation case
         return dst not in self.occupied_nodes
 
     def occupy_node(self, coordinates):
@@ -117,27 +117,16 @@ class Grid:
             print()
             print(''.join(vertical_path))
 
-
     def __eq__(self, other) -> bool:
         if self.grid_rows != other.grid_rows:
             return False
         if self.grid_columns != other.grid_columns:
             return False
-        # for package in self.packages_position:
-        #     if package not in other.packages_position:
-        #         return False
         if self.blocked_edges != other.blocked_edges:
             return False
-        # for edge in self.blocked_edges:
-        #     if edge not in other.blocked_edges:
-        #         return False
         if self.fragile_edges != other.fragile_edges:
             return False
-        # for edge in self.fragile_edges:
-        #     if edge not in other.fragile_edges:
-        #         return False
         return True
-        
 
 
 class GridErrors(Exception):

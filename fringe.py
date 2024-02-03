@@ -3,7 +3,7 @@ class Fringe:
         self._queue = []
         self._sort_func = sort_func
 
-    def __containes__(self, element):
+    def __contains__(self, element):
         return element in self._queue
     
     def __iter__(self):

@@ -20,7 +20,7 @@ class Simulator:
                     solved = True
                     break # TODO is this necessary ? maybe return ?
                 self.world = self.world.move(current_position,move)
-                print("Real Move")
+                print("Real Move") # print world state
                 self.world.print_grid()
             self.world.time += 1
 
