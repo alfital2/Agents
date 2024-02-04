@@ -10,6 +10,7 @@ class Agent:
         self._objectives = []
         self._path = []
         self._package_history = {}
+        self.score = 0
 
     def get_position(self):
         return self._pos
@@ -19,20 +20,24 @@ class Agent:
         new_grid = copy.deepcopy(grid)  # grid.copy()
         node = Node(grid=new_grid, parent=None, cost=0, current_pos=self._pos, path=self._path,
                     history=copy.deepcopy(self._package_history))
+        if len(node.points_of_interest) == 0:
+            return 1, None # success
         min_heap.enqueue(node)
         answer = logic.a_star(min_heap)
-        if answer.parent is None:  # Already solved problem
-            return None  # TODO Should be check in get_action invoke
-        next_move = self.extract_next_move(answer)
-        self.update_delivery_status_for_next_move(grid, next_move)
-        return next_move
+        if answer is None :
+            return -1, None  # failed to find path
 
-    def update_delivery_status_for_next_move(self, grid, next_move):
+        next_move = self.extract_next_move(answer)
         self.acquire_package(grid, next_move)
+        self.deliver_package(grid, next_move)
+        return 0, next_move
+
+    def deliver_package(self, grid, next_move):
         destinations = {package['obj'].destination: coordinates for coordinates, package in
                         self._package_history.items()}
         if next_move in destinations and self._package_history[destinations[next_move]]['delivery_time'] == -1:
             self._package_history[destinations[next_move]]['delivery_time'] = grid.time + 1
+            self.score += 1
 
     def acquire_package(self, grid, next_move):
         if next_move in grid.packages_position:
