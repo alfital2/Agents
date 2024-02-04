@@ -14,6 +14,4 @@ if __name__ == "__main__":
     Node.goal_test = goal_test_mst
     Node.should_explored_node = should_explored_node
     simulator = S.new_simulation(parser.get_data())
-    simulator.run()
-
-    print("ended!")
+    print(simulator.run())

@@ -4,7 +4,7 @@ from node import Node
 def a_star(min_heap):
     closed = []
     while True:
-        if min_heap.is_empty():
+        if min_heap.is_empty():  # no solution
             return None
         node = min_heap.dequeue()
         if Node.goal_test(node):
