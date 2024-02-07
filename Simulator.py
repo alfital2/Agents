@@ -23,7 +23,6 @@ class Simulator:
                 sum_status += status
                 if status == 0 and action != current_position:
                     self.world = self.world.move(current_position, action)
-                    #print("Real Move")  # print world state
                     self.world.print_grid()
                     print("Agent {} moved to {}\n".format(i, action))
             self.world.time += 1

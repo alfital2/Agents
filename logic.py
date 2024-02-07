@@ -1,13 +1,15 @@
 from node import Node
 
 
-def a_star(min_heap):
+def a_star(min_heap,limit):
     closed = []
     while True:
         if min_heap.is_empty():  # no solution
             return None
         node = min_heap.dequeue()
         if Node.goal_test(node):
+            return node
+        if node.g_val > limit:
             return node
         if Node.should_explored_node(node):
             try:

@@ -1,6 +1,8 @@
 import packages
 import human_agent as ha
-import stupid_agent as sa
+from a_star_agent import A_Star_Agent
+from rta_star_agent import RTA_Star_Agent
+from search_agent import Search_Agent
 
 class Parser:
     def __init__(self, file_path):
@@ -34,13 +36,16 @@ class Parser:
                     fragile_edges.add(tuple([x1y1, x2y2]))
                 elif element[0] == '#A':
                     xy = tuple([int(element[1]), int(element[2])])
-                    agents_arr.append(sa.Agent(xy))
+                    agents_arr.append(A_Star_Agent(xy))
                 elif element[0] == '#H':
                     xy = tuple([int(element[1]), int(element[2])])
                     agents_arr.append(ha.HumanAgent(xy))
-                # elif element[0] == '#I':
-                #     xy = tuple([int(element[1]), int(element[2])])
-                #     agents_arr.append(HumanAgent(xy))
+                elif element[0] == '#R':
+                    xy = tuple([int(element[1]), int(element[2])])
+                    agents_arr.append(RTA_Star_Agent(xy,10))
+                elif element[0] == '#G':
+                    xy = tuple([int(element[1]), int(element[2])])
+                    agents_arr.append(Search_Agent(xy))
 
         self._data["grid_rows"] = y
         self._data["grid_columns"] = x

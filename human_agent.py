@@ -1,5 +1,6 @@
 from agent import Agent
 
+
 class HumanAgent(Agent):
     def __init__(self, position):
         super().__init__(position)
@@ -16,4 +17,6 @@ class HumanAgent(Agent):
                 print("Illegal move, try again!")
                 continue
             self._pos = move
+
+            self.handle_package(grid,move)
             return move
