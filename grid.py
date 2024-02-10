@@ -1,4 +1,5 @@
 import copy
+from interfering_agent import Interfering_Agent
 
 
 class Grid:
@@ -63,12 +64,12 @@ class Grid:
             self.fragile_edges.remove(tuple([dst, src]))
         self.blocked_edges.add(tuple([src, dst]))
 
-    def move(self, src, dst):
+    def move(self, src, dst, handle_package = True):
         cloned_grid = copy.deepcopy(self)
         if cloned_grid.is_legal_move(src, dst):
             if cloned_grid.is_fragile_edge(src, dst):
                 cloned_grid.block_fragile_edge(src, dst)
-            if dst in self.packages_position:
+            if dst in self.packages_position and handle_package:
                 cloned_grid.packages_position.remove(dst)
                 package_destination = [x.destination for x in self.packages_data if x.source == dst][0]
                 cloned_grid.packages_destination.remove(package_destination)

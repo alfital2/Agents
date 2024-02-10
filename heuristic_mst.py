@@ -41,10 +41,13 @@ def dijkstra(source, targets, grid): # stop after finding all targets
     distances = {(x,y):inf for x,y in product(range(grid.grid_columns+1),range(grid.grid_rows+1))}
     distances[source] = 0
     visited = set()
-    
+
+    # all vertices I didn't visit yet
     d = sorted(filter(lambda x: x[0] not in visited, distances.items()), key=lambda x:x[1])
 
-    while d or not reduce(lambda x,y:x and y,map(lambda x: distances[x]!=inf, targets),True):# fix non decreasing distances
+    while d:# fix non decreasing distances
+        if reduce(lambda x,y:x and y,map(lambda x: distances[x]!=inf, targets),True):
+            break
         u, _ = d.pop(0)
         visited.add(u)
 
@@ -56,7 +59,7 @@ def dijkstra(source, targets, grid): # stop after finding all targets
                     distances[v]=distances[u]+1
                     path[v] = u
 
-        d = sorted(d, key=lambda x:x[1])
+        d = sorted(filter(lambda x: x[0] not in visited, distances.items()), key=lambda x:x[1])
     return distances, path
 
 

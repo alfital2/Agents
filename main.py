@@ -1,5 +1,5 @@
 import file_parser
-import Simulator as S
+import Simulator
 from node import Node
 from heuristic_mst import heuristic_mst, goal_test_mst, should_explored_node
 import sys
@@ -13,5 +13,6 @@ if __name__ == "__main__":
     Node.heuristic = heuristic_mst
     Node.goal_test = goal_test_mst
     Node.should_explored_node = should_explored_node
-    simulator = S.new_simulation(parser.get_data())
+    Simulator.T = 0.1
+    simulator = Simulator.new_simulation(parser.get_data())
     print(simulator.run())
