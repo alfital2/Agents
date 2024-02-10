@@ -5,12 +5,12 @@ def a_star(min_heap,limit):
     closed = []
     while True:
         if min_heap.is_empty():  # no solution
-            return None
+            return None, len(closed)
         node = min_heap.dequeue()
         if Node.goal_test(node):
-            return node
+            return node, len(closed)
         if node.g_val > limit:
-            return node
+            return node, len(closed)
         if Node.should_explored_node(node):
             try:
                 i = closed.index(node)

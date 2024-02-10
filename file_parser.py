@@ -3,6 +3,8 @@ import human_agent as ha
 from a_star_agent import A_Star_Agent
 from rta_star_agent import RTA_Star_Agent
 from search_agent import Search_Agent
+from stupid_greedy_agent import Stupid_Greedy_Agent
+from interfering_agent import Interfering_Agent
 
 class Parser:
     def __init__(self, file_path):
@@ -42,10 +44,16 @@ class Parser:
                     agents_arr.append(ha.HumanAgent(xy))
                 elif element[0] == '#R':
                     xy = tuple([int(element[1]), int(element[2])])
-                    agents_arr.append(RTA_Star_Agent(xy,10))
+                    agents_arr.append(RTA_Star_Agent(xy,11))
                 elif element[0] == '#G':
                     xy = tuple([int(element[1]), int(element[2])])
                     agents_arr.append(Search_Agent(xy))
+                elif element[0] == '#SG':
+                    xy = tuple([int(element[1]), int(element[2])])
+                    agents_arr.append(Stupid_Greedy_Agent(xy))
+                elif element[0] == '#I':
+                    xy = tuple([int(element[1]), int(element[2])])
+                    agents_arr.append(Interfering_Agent(xy))
 
         self._data["grid_rows"] = y
         self._data["grid_columns"] = x
