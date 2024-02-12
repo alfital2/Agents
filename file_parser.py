@@ -2,7 +2,7 @@ import packages
 import human_agent as ha
 from a_star_agent import A_Star_Agent
 from rta_star_agent import RTA_Star_Agent
-from search_agent import Search_Agent
+from greedy_agent import Greedy_Agent
 from stupid_greedy_agent import Stupid_Greedy_Agent
 from interfering_agent import Interfering_Agent
 
@@ -47,7 +47,7 @@ class Parser:
                     agents_arr.append(RTA_Star_Agent(xy,11))
                 elif element[0] == '#G':
                     xy = tuple([int(element[1]), int(element[2])])
-                    agents_arr.append(Search_Agent(xy))
+                    agents_arr.append(Greedy_Agent(xy))
                 elif element[0] == '#SG':
                     xy = tuple([int(element[1]), int(element[2])])
                     agents_arr.append(Stupid_Greedy_Agent(xy))

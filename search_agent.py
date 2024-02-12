@@ -10,6 +10,7 @@ class Search_Agent(Agent):
     def __init__(self, position):
         self.search_limit = inf
         self._expansions = 0
+        self._current_expansions = 0
         super().__init__(position)
 
     def _extract_next_move(self, answer):
@@ -26,6 +27,9 @@ class Search_Agent(Agent):
     def get_expansions(self):
         return self._expansions
 
+    def get_current_expansions(self):
+        return self._current_expansions
+
     def get_action(self, grid):
         min_heap = self.init_fringe()
         new_grid = copy.deepcopy(grid)  # grid.copy()
@@ -35,6 +39,7 @@ class Search_Agent(Agent):
             return 1, None  # success
         min_heap.enqueue(node)
         answer, expansions = logic.a_star(min_heap, self.search_limit)
+        self._current_expansions = expansions
         self._expansions += expansions
         if answer is None:
             return -1, None  # failed to find path
