@@ -10,9 +10,12 @@ if __name__ == "__main__":
     parser = file_parser.Parser(file_path)
     parser.parse()
 
-    Node.heuristic = heuristic_mst
-    Node.goal_test = goal_test_mst
-    Node.should_explored_node = should_explored_node
-    Simulator.T = 0.1
-    simulator = Simulator.new_simulation(parser.get_data())
-    print(simulator.run())
+    # Node.heuristic = heuristic_mst
+    # Node.goal_test = goal_test_mst
+    # Node.should_explored_node = should_explored_node
+    # Simulator.T = 0.1
+    # simulator = Simulator.new_simulation(parser.get_data())
+    # print(simulator.run())
+
+    # For game tree search we should let the user decide on the
+    # heuristic function
