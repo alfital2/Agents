@@ -5,17 +5,25 @@ from heuristic_mst import heuristic_mst, goal_test_mst, should_explored_node
 import sys
 
 
+def choose_game_mode():
+    print("Choose game mode:")
+    print("1) Adversarial")
+    print("2) Semi-cooperative")
+    print("3) Fully-cooperative\n")
+
+    while True:
+        try:
+            mode = int(input("Enter the number corresponding to your choice: "))
+            if mode in [1, 2, 3]:
+                return mode
+            else:
+                print("Invalid input. Please enter a number between 1, 2, or 3.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+
 if __name__ == "__main__":
     file_path = "environments/env1.txt"
     parser = file_parser.Parser(file_path)
     parser.parse()
-
-    # Node.heuristic = heuristic_mst
-    # Node.goal_test = goal_test_mst
-    # Node.should_explored_node = should_explored_node
-    # Simulator.T = 0.1
-    # simulator = Simulator.new_simulation(parser.get_data())
-    # print(simulator.run())
-
-    # For game tree search we should let the user decide on the
-    # heuristic function
+    mode = choose_game_mode()
